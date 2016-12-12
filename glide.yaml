@@ -1,0 +1,5 @@
+package: github.com/nick.codes/ezcrypt
+import:
+- package: golang.org/x/crypto
+  subpackages:
+  - nacl/box
