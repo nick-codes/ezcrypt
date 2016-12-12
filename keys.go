@@ -22,7 +22,7 @@ const (
 type Key interface {
 	Bytes() *[KeySize]byte
 	Slice() []byte
-	Encrypt(data []byte) ([]byte, error)
+	Encrypt(data []byte, in io.Reader) ([]byte, error)
 	Decrypt(data []byte) ([]byte, error)
 	Store(file string) error
 }
@@ -148,14 +148,12 @@ func (k *key) Slice() []byte {
 	return k.key[:]
 }
 
-func (k *key) Encrypt(data []byte) ([]byte, error) {
-	// TODO: This is a terrible encryption method!
-	return data, nil
+func (k *key) Encrypt(data []byte, in io.Reader) ([]byte, error) {
+	return encrypt(data, k, in)
 }
 
 func (k *key) Decrypt(data []byte) ([]byte, error) {
-	// TODO: This only works if you use Encrypt above! Hahah!
-	return data, nil
+	return decrypt(data, k)
 }
 
 func writeKey(k Key, file string) error {

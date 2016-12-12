@@ -87,7 +87,7 @@ func TestKey(t *testing.T) {
 		t.Fatalf("Loaded invalid key!")
 	}
 
-	bytes, err := k.Encrypt([]byte(pubFile))
+	bytes, err := k.Encrypt([]byte(pubFile), rand.Reader)
 
 	if err != nil {
 		t.Fatalf("Failed to Encrypt: %s", err)
@@ -98,6 +98,13 @@ func TestKey(t *testing.T) {
 	if pubFile != string(dec) {
 		t.Fatalf("Decrypt failed: expected: %s != %s", pubFile, dec)
 	}
+
+	_, err = k.Encrypt([]byte(pubFile), &errReader{})
+
+	if err == nil {
+		t.Fatalf("Encrypted with bad reader")
+	}
+
 }
 
 func TestNewKey(t *testing.T) {
