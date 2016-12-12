@@ -1,0 +1,12 @@
+hash: e66479badf6d0de9485d77f6ff164324c8c2b178ae6268864d661255a5dfde21
+updated: 2016-12-11T21:40:38.08061795-08:00
+imports:
+- name: golang.org/x/crypto
+  version: b07d8c96772f426812d3fc5530710ec1f3b205e7
+  subpackages:
+  - nacl/box
+  - curve25519
+  - nacl/secretbox
+  - salsa20/salsa
+  - poly1305
+devImports: []
