@@ -87,15 +87,19 @@ func TestKey(t *testing.T) {
 		t.Fatalf("Loaded invalid key!")
 	}
 
-	bytes, err := k.Encrypt([]byte(pubFile), rand.Reader)
+	ct, err := k.Encrypt(m, rand.Reader)
 
 	if err != nil {
 		t.Fatalf("Failed to Encrypt: %s", err)
 	}
 
-	dec, err := k2.Decrypt(bytes)
+	if bytes.Equal(m, ct) {
+		t.Fatalf("WTF!")
+	}
 
-	if pubFile != string(dec) {
+	dec, err := k2.Decrypt(ct)
+
+	if !bytes.Equal(m, dec) {
 		t.Fatalf("Decrypt failed: expected: %s != %s", pubFile, dec)
 	}
 
@@ -173,16 +177,32 @@ func TestPair(t *testing.T) {
 		t.Fatalf("Failed to write invalid key for test.")
 	}
 
-	_, err = NewPair(&errReader{})
+	_, err = GeneratePair(&errReader{})
 
 	if err == nil {
 		t.Fatalf("Failed to bork with bad rand source.")
 	}
 
-	pair, err := NewPair(rand.Reader)
+	pair, err := GeneratePair(rand.Reader)
 
 	if err != nil {
 		t.Fatalf("Failed to make pair: %s", err)
+	}
+
+	ct, err := pair.Encrypt(m, pair.Public(), rand.Reader)
+
+	if err != nil {
+		t.Fatalf("Encrypt failed: %s", err)
+	}
+
+	dt, err := pair.Decrypt(ct, pair.Public())
+
+	if err != nil {
+		t.Fatalf("Decrypt failed: %s", err)
+	}
+
+	if !bytes.Equal(m, dt) {
+		t.Fatalf("Decrypted message wrong: %s", dt)
 	}
 
 	err = pair.Store(temp, priv)

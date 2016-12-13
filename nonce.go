@@ -22,21 +22,19 @@ func (n *nonce) Slice() []byte {
 	return n.d[:]
 }
 
-func newNonce(m []byte) (*nonce, error) {
-	if len(m) < nonceSize {
-		return nil, fmt.Errorf("Not enough data.")
-	}
+// assumes that m is long enough, which all callers currently do checks for
+func newNonce(m []byte) *nonce {
 
 	n := &nonce{d: new([nonceSize]byte)}
 
 	copy(n.Slice(), m[:nonceSize])
 
-	return n, nil
+	return n
 }
 
 func generateNonce(in io.Reader) (*nonce, error) {
 	if in == nil {
-		return nil, fmt.Errorf("No random source");
+		return nil, fmt.Errorf("No random source")
 	}
 
 	n := &nonce{d: new([nonceSize]byte)}

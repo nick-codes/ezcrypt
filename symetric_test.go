@@ -3,9 +3,9 @@ package ezcrypt
 import (
 	"bytes"
 	"crypto/rand"
-	"testing"
-	"io"
 	"fmt"
+	"io"
+	"testing"
 )
 
 type badKey struct{}
@@ -19,15 +19,15 @@ func (*badKey) Slice() []byte {
 	return []byte{}
 }
 
-func (*badKey) 	Encrypt(data []byte, in io.Reader) ([]byte, error) {
-	return nil, fmt.Errorf("Bad Key!");
+func (*badKey) Encrypt(data []byte, in io.Reader) ([]byte, error) {
+	return nil, fmt.Errorf("Bad Key!")
 }
 
-func (*badKey)	Decrypt(data []byte) ([]byte, error) {
-	return nil, fmt.Errorf("Bad Key!");
+func (*badKey) Decrypt(data []byte) ([]byte, error) {
+	return nil, fmt.Errorf("Bad Key!")
 }
 func (*badKey) Store(file string) error {
-	return fmt.Errorf("Bad Key!");
+	return fmt.Errorf("Bad Key!")
 }
 
 var (

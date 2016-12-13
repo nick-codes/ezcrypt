@@ -30,12 +30,14 @@ type Key interface {
 //  Abstracts a public private key pair.
 type Pair interface {
 	Public() Key
+	Encrypt(data []byte, dest Key, in io.Reader) ([]byte, error)
+	Decrypt(data []byte, source Key) ([]byte, error)
 	Store(public, private string) error
 	private() Key
 }
 
 // Constructs a new key pair.
-func NewPair(rand io.Reader) (Pair, error) {
+func GeneratePair(rand io.Reader) (Pair, error) {
 	var err error
 
 	publicKey, privateKey, err := box.GenerateKey(rand)
@@ -109,6 +111,14 @@ func (p *pair) Public() Key {
 
 func (p *pair) private() Key {
 	return p.priv
+}
+
+func (p *pair) Encrypt(data []byte, dest Key, in io.Reader) ([]byte, error) {
+	return encryptAsym(data, dest, p, in)
+}
+
+func (p *pair) Decrypt(data []byte, source Key) ([]byte, error) {
+	return decryptAsym(data, source, p)
 }
 
 func (p *pair) Store(public, private string) error {

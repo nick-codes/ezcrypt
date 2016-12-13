@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	overhead  = box.Overhead + nonceSize
+	overhead = box.Overhead + nonceSize
 )
 
 func checkEncrypt(m []byte, k Key) error {
@@ -31,10 +31,6 @@ func encrypt(m []byte, k Key, in io.Reader) ([]byte, error) {
 
 	if err != nil {
 		return nil, err
-	}
-
-	if in == nil {
-		return nil, fmt.Errorf("No random source")
 	}
 
 	n, err := generateNonce(in)
@@ -70,9 +66,8 @@ func decrypt(m []byte, k Key) ([]byte, error) {
 		return nil, err
 	}
 
-	// error is not possible here because checkDecrypt validated message length
-	n, _ := newNonce(m)
-	
+	n := newNonce(m)
+
 	out := make([]byte, 0, len(m)-overhead)
 
 	ret, ok := secretbox.Open(out, m[nonceSize:], n.Bytes(), k.Bytes())
